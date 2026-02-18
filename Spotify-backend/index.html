@@ -1,0 +1,91 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2865
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="en">\
+<head>\
+    <meta charset="UTF-8">\
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">\
+    <title>HMD Spotify</title>\
+    <style>\
+        /* Minimalist Design for 240x320 screen */\
+        body \{ \
+            background-color: #000; \
+            color: #fff; \
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; \
+            text-align: center; \
+            margin: 0; \
+            padding: 20px;\
+            display: flex;\
+            flex-direction: column;\
+            justify-content: center;\
+            height: 100vh;\
+            overflow: hidden;\
+        \}\
+        #track-name \{ font-size: 20px; font-weight: bold; margin-bottom: 5px; color: #fff; \}\
+        #artist-name \{ font-size: 16px; color: #1DB954; margin-bottom: 30px; \}\
+        \
+        button \{ \
+            background-color: #1DB954; \
+            border: none; \
+            color: white; \
+            padding: 25px; \
+            border-radius: 50%; \
+            font-size: 24px;\
+            width: 80px;\
+            height: 80px;\
+            cursor: pointer;\
+            margin: 0 auto;\
+        \}\
+        #status \{ font-size: 10px; color: #444; margin-top: 20px; \}\
+    </style>\
+</head>\
+<body>\
+\
+    <div id="track-name">Ready to Connect</div>\
+    <div id="artist-name">HMD 110 4G</div>\
+\
+    <button id="togglePlay">\uc0\u9654 </button>\
+\
+    <div id="status">Vercel: checking...</div>\
+\
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>\
+    <script>\
+        window.onSpotifyWebPlaybackSDKReady = () => \{\
+            const player = new Spotify.Player(\{\
+                name: 'HMD 110 4G Player',\
+                getOAuthToken: async cb => \{\
+                    try \{\
+                        // REPLACE THIS URL with your actual Vercel deployment URL\
+                        const res = await fetch('https://vercel.com/arjuns-projects-0926f473/spotify-hmd/GqHEfUVuE5WP6hVh3aqhfRkAybC9');\
+                        const data = await res.json();\
+                        document.getElementById('status').innerText = "Vercel: Connected";\
+                        cb(data.access_token);\
+                    \} catch (e) \{\
+                        document.getElementById('status').innerText = "Vercel: Error";\
+                    \}\
+                \},\
+                volume: 0.8\
+            \});\
+\
+            // Update UI on track change\
+            player.addListener('state_changed', state => \{\
+                if (!state) return;\
+                document.getElementById('track-name').innerText = state.track_window.current_track.name;\
+                document.getElementById('artist-name').innerText = state.track_window.current_track.artists[0].name;\
+                document.getElementById('togglePlay').innerText = state.paused ? "\uc0\u9654 " : "||";\
+            \});\
+\
+            player.connect();\
+\
+            document.getElementById('togglePlay').onclick = () => \{\
+                player.togglePlay();\
+            \};\
+        \};\
+    </script>\
+</body>\
+</html>}
