@@ -61,7 +61,7 @@
                 getOAuthToken: async cb => \{\
                     try \{\
                         // REPLACE THIS URL with your actual Vercel deployment URL\
-                        const res = await fetch('https://vercel.com/arjuns-projects-0926f473/spotify-hmd/GqHEfUVuE5WP6hVh3aqhfRkAybC9');\
+                        const res = await fetch('https://spotify-hmd.vercel.app/api/token');
                         const data = await res.json();\
                         document.getElementById('status').innerText = "Vercel: Connected";\
                         cb(data.access_token);\
