@@ -1,19 +1,21 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2865
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+export default async function handler(req, res) {
+  const client_id = process.env.SPOTIFY_CLIENT_ID;
+  const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+  const refresh_token = process.env.SPOTIFY_REFRESH_TOKEN;
 
-\f0\fs24 \cf0 window.onSpotifyWebPlaybackSDKReady = () => \{\
-    const player = new Spotify.Player(\{\
-        name: 'HMD 110 4G',\
-        getOAuthToken: async cb => \{\
-            // This calls your Vercel function every time a new token is needed\
-            const res = await fetch('https://your-vercel-project.vercel.app/api/token');\
-            const data = await res.json();\
-            cb(data.access_token);\
-        \}\
-    \});\
-    player.connect();\
-\};}
+  const response = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64')
+    },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: refresh_token,
+    }),
+  });
+
+  const data = await response.json();
+  res.setHeader('Access-Control-Allow-Origin', '*'); 
+  res.status(200).json({ access_token: data.access_token });
+}
